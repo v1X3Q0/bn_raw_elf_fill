@@ -25,6 +25,8 @@ R_TYPE_typeE = Type.enumeration_type(bv.platform.arch, R_TYPE_enum, width=1, sig
 bv.define_user_type('R_TYPE', R_TYPE_typeE)
 
 r_info_struct = types.Structure()
+r_info_struct.packed = True
+r_info_struct.alignment = 1
 r_info_struct.insert(0, R_TYPE_typeE, name='r_type')
 r_info_struct.append(Type.int(3, False), name='r_sym')
 r_info_typeS = Type.structure_type(r_info_struct)
