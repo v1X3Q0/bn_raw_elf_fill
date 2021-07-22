@@ -1,4 +1,6 @@
 Elf32_Sym_struct = types.Structure()
+Elf32_Sym_struct.packed = True
+Elf32_Sym_struct.alignment = 1
 Elf32_Sym_struct.insert(0, Type.int(4, False), name='name')
 Elf32_Sym_struct.insert(4, Type.int(4, False), name='value')
 Elf32_Sym_struct.insert(8, Type.int(4, False), name='size')
@@ -33,6 +35,11 @@ r_info_typeS = Type.structure_type(r_info_struct)
 bv.define_user_type("r_info", r_info_typeS)
 
 Elf32_Rel_struct = types.Structure()
+Elf32_Rel_struct.packed = True
+Elf32_Rel_struct.alignment = 1
 Elf32_Rel_struct.append(Type.int(4, False), name='offset')
-Elf32_Rel_struct.append(r_info_struct, name='info')
-bv.define_user_type("Elf32_Rel", Elf32_Rel_struct)
+Elf32_Rel_struct.append(r_info_typeS, name='info')
+Elf32_Rel_typeS = Type.structure_type(Elf32_Rel_struct)
+bv.define_user_type("Elf32_Rel", Elf32_Rel_typeS)
+
+
