@@ -42,4 +42,11 @@ Elf32_Rel_struct.append(r_info_typeS, name='info')
 Elf32_Rel_typeS = Type.structure_type(Elf32_Rel_struct)
 bv.define_user_type("Elf32_Rel", Elf32_Rel_typeS)
 
+Elf32_Vers_struct = types.Structure()
+Elf32_Vers_struct.packed = True
+Elf32_Vers_struct.alignment = 1
+Elf32_Vers_struct.append(Type.int(4, False), name='CRC')
+Elf32_Vers_struct.append(Type.array(Type.char(), 0x40 - 4), name='ext_name')
+Elf32_Vers_typeS = Type.structure_type(Elf32_Vers_struct)
+bv.define_user_type("Elf32_Vers", Elf32_Vers_typeS)
 
