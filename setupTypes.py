@@ -227,6 +227,17 @@ def grabLinuxElfTypes():
             curName = i.name[0]
             bv.define_user_type(curName, typeList.types[curName])
 
+# would be awesome to have, unfortunately the width is 4 and binja enum types can't be smaller than 8
+    # ST_TYPE_enum = types.Enumeration()
+    # ST_TYPE_enum.append(name='R_ARM_CALL', value=0x1c)
+    # ST_TYPE_enum.append(name='R_ARM_JUMP24', value=0x1d)
+    # ST_TYPE_enum.append(name='R_ARM_V4BX', value=0x28)
+    # ST_TYPE_enum.append(name='R_ARM_PREL31', value=0x2a)
+    # ST_TYPE_enum.append(name='R_ARM_MOVW_ABS_NC', value=0x2b)
+    # ST_TYPE_enum.append(name='R_ARM_MOVT_ABS', value=0x2c)
+    # ST_TYPE_typeE = Type.enumeration_type(bv.platform.arch, ST_TYPE_enum, width=1, sign=False)
+    # bv.define_user_type('ST_TYPE', ST_TYPE_typeE)
+
     Elf32_Sym_struct = types.Structure()
     Elf32_Sym_struct.packed = True
     Elf32_Sym_struct.alignment = 1
