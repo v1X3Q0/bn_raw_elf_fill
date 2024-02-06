@@ -219,6 +219,32 @@ struct Elf32_SectionHeader
 
 """
 
+from macro_to_enum import macro_to_enum_lines
+import os
+import sys
+
+def fix_linuxHeadTypes_h():
+    setupprefix = os.path.dirname(os.path.realpath(__file__))
+    lht = '{}linuxHeadTypes.h'.format(setupprefix + '/')
+    f = open(lht, 'r')
+    g = f.read()
+    f.close()
+    # simple tell if its already been parsed
+    if 'enum sh_type : uint32_t' in g:
+        return True
+    g = '\n'.join(macro_to_enum_lines(g, 'e_type', 'uint16_t', startdelim='ET_NONE', stopdelim='ET_HIPROC'))
+    g = '\n'.join(macro_to_enum_lines(g, 'e_machine', 'uint16_t', startdelim='EM_NONE', stopdelim='EM_NUM'))
+    g = '\n'.join(macro_to_enum_lines(g, 'p_flags', 'uint32_t', startdelim='PF_X', stopdelim='PF_R'))    
+    g = '\n'.join(macro_to_enum_lines(g, 'p_type', 'uint32_t', startdelim='PT_NULL', stopdelim='PT_HIPROC'))
+    g = '\n'.join(macro_to_enum_lines(g, 'sh_flags', 'uint32_t', startdelim='SHF_WRITE', stopdelim='SHF_EXCLUDE'))
+    g = '\n'.join(macro_to_enum_lines(g, 'sh_type', 'uint32_t', startdelim='SHT_NULL', stopdelim='SHT_HIUSER'))
+    g = '\n'.join(macro_to_enum_lines(g, 'arm_relocs', 'uint8_t', startdelim='R_ARM_NONE', stopdelim='R_ARM_RBASE'))
+
+    f = open(lht, 'w')
+    f.write(g)
+    f.close()
+
+
 def grabLinuxElfTypes():
     if bv.get_type_by_name("Elf32_Header") == None:
         # bv.platform.parse_types_from_source(open('linuxHeadTypes.h', 'r').read())
@@ -290,3 +316,4 @@ def grabLinuxElfTypes():
     Elf32_Vers_typeS = Type.structure_type(Elf32_Vers_struct)
     bv.define_user_type("Elf32_Vers", Elf32_Vers_typeS)
 
+fix_linuxHeadTypes_h()
