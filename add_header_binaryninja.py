@@ -1,7 +1,6 @@
 import re
-def add_header(justCause_name):
-    f = open(justCause_name, "r")
-    justCause = f.read()
+
+def add_header_by_blob(bv, justCause):
     justCauseNew = ""
     for i in justCause.split("\n"):
         i = ' ' + i
@@ -16,8 +15,13 @@ def add_header(justCause_name):
         justCauseNew += " ".join(spaced_i) + '\n'
     # print(justCauseNew)
     justCause = justCauseNew    
-    f.close()
     typeList = bv.platform.parse_types_from_source(justCause)
     for i in typeList.types:
         curName = i.name[0]
         bv.define_user_type(curName, typeList.types[curName])
+
+def add_header(justCause_name):
+    f = open(justCause_name, "r")
+    justCause = f.read()
+    f.close()
+    add_header_by_blob(justCause)
