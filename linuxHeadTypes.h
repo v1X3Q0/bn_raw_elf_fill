@@ -697,37 +697,14 @@ typedef struct
 #define ELF64_R_TYPE(i)			((i) & 0xffffffff)
 #define ELF64_R_INFO(sym,type)		((((Elf64_Xword) (sym)) << 32) + (type))
 
-/* Program segment header.  */
+/* Legal values for p_flags (segment flags).  */
 
-typedef struct
+enum p_flags : uint32_t
 {
-  Elf32_Word	p_type;			/* Segment type */
-  Elf32_Off	p_offset;		/* Segment file offset */
-  Elf32_Addr	p_vaddr;		/* Segment virtual address */
-  Elf32_Addr	p_paddr;		/* Segment physical address */
-  Elf32_Word	p_filesz;		/* Segment size in file */
-  Elf32_Word	p_memsz;		/* Segment size in memory */
-  Elf32_Word	p_flags;		/* Segment flags */
-  Elf32_Word	p_align;		/* Segment alignment */
-} Elf32_Phdr;
-
-typedef struct
-{
-  Elf64_Word	p_type;			/* Segment type */
-  Elf64_Word	p_flags;		/* Segment flags */
-  Elf64_Off	p_offset;		/* Segment file offset */
-  Elf64_Addr	p_vaddr;		/* Segment virtual address */
-  Elf64_Addr	p_paddr;		/* Segment physical address */
-  Elf64_Xword	p_filesz;		/* Segment size in file */
-  Elf64_Xword	p_memsz;		/* Segment size in memory */
-  Elf64_Xword	p_align;		/* Segment alignment */
-} Elf64_Phdr;
-
-/* Special value for e_phnum.  This indicates that the real number of
-   program headers is too large to fit into e_phnum.  Instead the real
-   value is in the field sh_info of section 0.  */
-
-#define PN_XNUM		0xffff
+	PF_X = (1 << 0), /* Segment is executable */
+	PF_W = (1 << 1), /* Segment is writable */
+	PF_R = (1 << 2), /* Segment is readable */
+};
 
 /* Legal values for p_type (segment type).  */
 
@@ -755,14 +732,38 @@ enum p_type : uint32_t
 	PT_HIPROC = 2147483647, /* End of processor-specific */
 };
 
-/* Legal values for p_flags (segment flags).  */
+/* Program segment header.  */
 
-enum p_flags : uint32_t
+typedef struct
 {
-	PF_X = (1 << 0), /* Segment is executable */
-	PF_W = (1 << 1), /* Segment is writable */
-	PF_R = (1 << 2), /* Segment is readable */
-};
+  enum p_type	p_type;			/* Segment type */
+  Elf32_Off	p_offset;		/* Segment file offset */
+  Elf32_Addr	p_vaddr;		/* Segment virtual address */
+  Elf32_Addr	p_paddr;		/* Segment physical address */
+  Elf32_Word	p_filesz;		/* Segment size in file */
+  Elf32_Word	p_memsz;		/* Segment size in memory */
+  enum p_flags	p_flags;		/* Segment flags */
+  Elf32_Word	p_align;		/* Segment alignment */
+} Elf32_Phdr;
+
+typedef struct
+{
+  enum p_type	p_type;			/* Segment type */
+  enum p_flags	p_flags;		/* Segment flags */
+  Elf64_Off	p_offset;		/* Segment file offset */
+  Elf64_Addr	p_vaddr;		/* Segment virtual address */
+  Elf64_Addr	p_paddr;		/* Segment physical address */
+  Elf64_Xword	p_filesz;		/* Segment size in file */
+  Elf64_Xword	p_memsz;		/* Segment size in memory */
+  Elf64_Xword	p_align;		/* Segment alignment */
+} Elf64_Phdr;
+
+/* Special value for e_phnum.  This indicates that the real number of
+   program headers is too large to fit into e_phnum.  Instead the real
+   value is in the field sh_info of section 0.  */
+
+#define PN_XNUM		0xffff
+
 #define PF_MASKOS	0x0ff00000	/* OS-specific */
 #define PF_MASKPROC	0xf0000000	/* Processor-specific */
 
