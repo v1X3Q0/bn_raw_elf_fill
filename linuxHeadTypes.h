@@ -395,36 +395,6 @@ typedef struct
 #define EV_CURRENT	1		/* Current version */
 #define EV_NUM		2
 
-/* Section header.  */
-
-typedef struct
-{
-  Elf32_Word	sh_name;		/* Section name (string tbl index) */
-  Elf32_Word	sh_type;		/* Section type */
-  Elf32_Word	sh_flags;		/* Section flags */
-  Elf32_Addr	sh_addr;		/* Section virtual addr at execution */
-  Elf32_Off	sh_offset;		/* Section file offset */
-  Elf32_Word	sh_size;		/* Section size in bytes */
-  Elf32_Word	sh_link;		/* Link to another section */
-  Elf32_Word	sh_info;		/* Additional section information */
-  Elf32_Word	sh_addralign;		/* Section alignment */
-  Elf32_Word	sh_entsize;		/* Entry size if section holds table */
-} Elf32_Shdr;
-
-typedef struct
-{
-  Elf64_Word	sh_name;		/* Section name (string tbl index) */
-  Elf64_Word	sh_type;		/* Section type */
-  Elf64_Xword	sh_flags;		/* Section flags */
-  Elf64_Addr	sh_addr;		/* Section virtual addr at execution */
-  Elf64_Off	sh_offset;		/* Section file offset */
-  Elf64_Xword	sh_size;		/* Section size in bytes */
-  Elf64_Word	sh_link;		/* Link to another section */
-  Elf64_Word	sh_info;		/* Additional section information */
-  Elf64_Xword	sh_addralign;		/* Section alignment */
-  Elf64_Xword	sh_entsize;		/* Entry size if section holds table */
-} Elf64_Shdr;
-
 /* Special section indices.  */
 
 #define SHN_UNDEF	0		/* Undefined section */
@@ -507,6 +477,38 @@ enum sh_flags : uint32_t
 	SHF_EXCLUDE = (1U << 31), /* Section is excluded unless
 					   referenced or allocated (Solaris).*/
 };
+
+/* Section header.  */
+
+typedef struct
+{
+  Elf32_Word	sh_name;		/* Section name (string tbl index) */
+  enum sh_type	sh_type;		/* Section type */
+  enum sh_flags	sh_flags;		/* Section flags */
+  Elf32_Addr	sh_addr;		/* Section virtual addr at execution */
+  Elf32_Off	sh_offset;		/* Section file offset */
+  Elf32_Word	sh_size;		/* Section size in bytes */
+  Elf32_Word	sh_link;		/* Link to another section */
+  Elf32_Word	sh_info;		/* Additional section information */
+  Elf32_Word	sh_addralign;		/* Section alignment */
+  Elf32_Word	sh_entsize;		/* Entry size if section holds table */
+} Elf32_Shdr;
+
+typedef struct
+{
+  Elf64_Word	sh_name;		/* Section name (string tbl index) */
+  enum sh_type	sh_type;		/* Section type */
+  enum sh_flags	sh_flags;		/* Section flags */
+  uint32_t sh_flags_upper;
+  Elf64_Addr	sh_addr;		/* Section virtual addr at execution */
+  Elf64_Off	sh_offset;		/* Section file offset */
+  Elf64_Xword	sh_size;		/* Section size in bytes */
+  Elf64_Word	sh_link;		/* Link to another section */
+  Elf64_Word	sh_info;		/* Additional section information */
+  Elf64_Xword	sh_addralign;		/* Section alignment */
+  Elf64_Xword	sh_entsize;		/* Entry size if section holds table */
+} Elf64_Shdr;
+
 
 /* Section compression header.  Used when SHF_COMPRESSED is set.  */
 
