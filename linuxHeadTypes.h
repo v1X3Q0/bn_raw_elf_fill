@@ -537,6 +537,49 @@ typedef struct
 /* Section group handling.  */
 #define GRP_COMDAT	0x1		/* Mark group as COMDAT.  */
 
+/* Legal values for ST_BIND subfield of st_info (symbol binding).  */
+
+enum st_bind : uint8_t
+{
+	STB_LOCAL = 0, /* Local symbol */
+	STB_GLOBAL = 1, /* Global symbol */
+	STB_WEAK = 2, /* Weak symbol */
+	STB_NUM = 3, /* Number of defined types.  */
+	STB_LOOS = 10, /* Start of OS-specific */
+	STB_GNU_UNIQUE = 10, /* Unique symbol.  */
+	STB_HIOS = 12, /* End of OS-specific */
+	STB_LOPROC = 13, /* Start of processor-specific */
+	STB_HIPROC = 15, /* End of processor-specific */
+};
+
+/* Symbol visibility specification encoded in the st_other field.  */
+enum st_vis : uint8_t
+{
+	STV_DEFAULT = 0, /* Default symbol visibility rules */
+	STV_INTERNAL = 1, /* Processor specific hidden class */
+	STV_HIDDEN = 2, /* Sym unavailable in other modules */
+	STV_PROTECTED = 3, /* Not preemptible, not exported */
+};
+
+/* Legal values for ST_TYPE subfield of st_info (symbol type).  */
+
+enum st_type : uint8_t
+{
+	STT_NOTYPE = 0, /* Symbol type is unspecified */
+	STT_OBJECT = 1, /* Symbol is a data object */
+	STT_FUNC = 2, /* Symbol is a code object */
+	STT_SECTION = 3, /* Symbol associated with a section */
+	STT_FILE = 4, /* Symbol's name is file name */
+	STT_COMMON = 5, /* Symbol is a common data object */
+	STT_TLS = 6, /* Symbol is thread-local data object*/
+	STT_NUM = 7, /* Number of defined types.  */
+	STT_LOOS = 10, /* Start of OS-specific */
+	STT_GNU_IFUNC = 10, /* Symbol is indirect code object */
+	STT_HIOS = 12, /* End of OS-specific */
+	STT_LOPROC = 13, /* Start of processor-specific */
+	STT_HIPROC = 15, /* End of processor-specific */
+};
+
 /* Symbol table entry.  */
 
 typedef struct
@@ -544,16 +587,19 @@ typedef struct
   Elf32_Word	st_name;		/* Symbol name (string tbl index) */
   Elf32_Addr	st_value;		/* Symbol value */
   Elf32_Word	st_size;		/* Symbol size */
-  unsigned char	st_info;		/* Symbol type and binding */
-  unsigned char	st_other;		/* Symbol visibility */
+  union {
+	enum st_type	st_type_info;	// at offset 0 is the st_type
+	enum st_bind	st_bind_info;		/* Symbol type and binding, at offset 4 */
+  } st_info;
+  enum st_vis	st_other;		/* Symbol visibility */
   Elf32_Section	st_shndx;		/* Section index */
 } Elf32_Sym;
 
 typedef struct
 {
   Elf64_Word	st_name;		/* Symbol name (string tbl index) */
-  unsigned char	st_info;		/* Symbol type and binding */
-  unsigned char st_other;		/* Symbol visibility */
+  enum st_bind	st_info;		/* Symbol type and binding */
+  enum st_vis st_other;		/* Symbol visibility */
   Elf64_Section	st_shndx;		/* Section index */
   Elf64_Addr	st_value;		/* Symbol value */
   Elf64_Xword	st_size;		/* Symbol size */
@@ -602,35 +648,6 @@ typedef struct
 #define ELF64_ST_TYPE(val)		ELF32_ST_TYPE (val)
 #define ELF64_ST_INFO(bind, type)	ELF32_ST_INFO ((bind), (type))
 
-/* Legal values for ST_BIND subfield of st_info (symbol binding).  */
-
-#define STB_LOCAL	0		/* Local symbol */
-#define STB_GLOBAL	1		/* Global symbol */
-#define STB_WEAK	2		/* Weak symbol */
-#define	STB_NUM		3		/* Number of defined types.  */
-#define STB_LOOS	10		/* Start of OS-specific */
-#define STB_GNU_UNIQUE	10		/* Unique symbol.  */
-#define STB_HIOS	12		/* End of OS-specific */
-#define STB_LOPROC	13		/* Start of processor-specific */
-#define STB_HIPROC	15		/* End of processor-specific */
-
-/* Legal values for ST_TYPE subfield of st_info (symbol type).  */
-
-#define STT_NOTYPE	0		/* Symbol type is unspecified */
-#define STT_OBJECT	1		/* Symbol is a data object */
-#define STT_FUNC	2		/* Symbol is a code object */
-#define STT_SECTION	3		/* Symbol associated with a section */
-#define STT_FILE	4		/* Symbol's name is file name */
-#define STT_COMMON	5		/* Symbol is a common data object */
-#define STT_TLS		6		/* Symbol is thread-local data object*/
-#define	STT_NUM		7		/* Number of defined types.  */
-#define STT_LOOS	10		/* Start of OS-specific */
-#define STT_GNU_IFUNC	10		/* Symbol is indirect code object */
-#define STT_HIOS	12		/* End of OS-specific */
-#define STT_LOPROC	13		/* Start of processor-specific */
-#define STT_HIPROC	15		/* End of processor-specific */
-
-
 /* Symbol table indices are found in the hash buckets and chain table
    of a symbol hash table section.  This special index value indicates
    the end of a chain, meaning no further symbols are found in that bucket.  */
@@ -644,13 +661,6 @@ typedef struct
 
 /* For ELF64 the definitions are the same.  */
 #define ELF64_ST_VISIBILITY(o)	ELF32_ST_VISIBILITY (o)
-
-/* Symbol visibility specification encoded in the st_other field.  */
-#define STV_DEFAULT	0		/* Default symbol visibility rules */
-#define STV_INTERNAL	1		/* Processor specific hidden class */
-#define STV_HIDDEN	2		/* Sym unavailable in other modules */
-#define STV_PROTECTED	3		/* Not preemptible, not exported */
-
 
 /* Relocation table entry without addend (in section of type SHT_REL).  */
 

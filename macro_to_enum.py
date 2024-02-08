@@ -40,6 +40,9 @@ def macro_to_enum(line):
     return linefinal
 
 def macro_to_enum_lines(blob, enum_type, enum_size=None, startdelim=None, stopdelim=None):
+    resolved_already = "{} : {}".format(enum_type, enum_size)
+    if resolved_already in blob:
+        return blob
     lines = blob.split('\n')
     parse_active = False
     opencomment = False
@@ -78,7 +81,7 @@ def macro_to_enum_lines(blob, enum_type, enum_size=None, startdelim=None, stopde
         if parse_active == True:
             filelist.append('};')
             parse_active = False
-    return filelist
+    return '\n'.join(filelist)
 
 def macro_to_enum_file(filein, enum_type, enum_size=None, fileout=None, startdelim=None, stopdelim=None):
     if fileout == None:

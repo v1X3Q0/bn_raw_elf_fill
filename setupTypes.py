@@ -231,20 +231,22 @@ def fix_linuxHeadTypes_h():
     g = f.read()
     f.close()
     # simple tell if its already been configured
-    if 'enum sh_type : uint32_t' in g:
-        return g
-    g = '\n'.join(macro_to_enum_lines(g, 'e_type', 'uint16_t', startdelim='ET_NONE', stopdelim='ET_HIPROC'))
-    g = '\n'.join(macro_to_enum_lines(g, 'e_machine', 'uint16_t', startdelim='EM_NONE', stopdelim='EM_NUM'))
-    g = '\n'.join(macro_to_enum_lines(g, 'p_flags', 'uint32_t', startdelim='PF_X', stopdelim='PF_R'))    
-    g = '\n'.join(macro_to_enum_lines(g, 'p_type', 'uint32_t', startdelim='PT_NULL', stopdelim='PT_HIPROC'))
-    g = '\n'.join(macro_to_enum_lines(g, 'sh_flags', 'uint32_t', startdelim='SHF_WRITE', stopdelim='SHF_EXCLUDE'))
-    g = '\n'.join(macro_to_enum_lines(g, 'sh_type', 'uint32_t', startdelim='SHT_NULL', stopdelim='SHT_HIUSER'))
-    g = '\n'.join(macro_to_enum_lines(g, 'arm_relocs', 'uint8_t', startdelim='R_ARM_NONE', stopdelim='R_ARM_RBASE'))
+    g = macro_to_enum_lines(g, 'e_type', 'uint16_t', startdelim='ET_NONE', stopdelim='ET_HIPROC')
+    g = macro_to_enum_lines(g, 'e_machine', 'uint16_t', startdelim='EM_NONE', stopdelim='EM_NUM')
+    g = macro_to_enum_lines(g, 'p_flags', 'uint32_t', startdelim='PF_X', stopdelim='PF_R')
+    g = macro_to_enum_lines(g, 'p_type', 'uint32_t', startdelim='PT_NULL', stopdelim='PT_HIPROC')
+    g = macro_to_enum_lines(g, 'sh_flags', 'uint32_t', startdelim='SHF_WRITE', stopdelim='SHF_EXCLUDE')
+    g = macro_to_enum_lines(g, 'sh_type', 'uint32_t', startdelim='SHT_NULL', stopdelim='SHT_HIUSER')
+    g = macro_to_enum_lines(g, 'arm_relocs', 'uint8_t', startdelim='R_ARM_NONE', stopdelim='R_ARM_RBASE')
+    g = macro_to_enum_lines(g, 'st_vis', 'uint8_t', startdelim='STV_DEFAULT', stopdelim='STV_PROTECTED')
+    g = macro_to_enum_lines(g, 'st_bind', 'uint8_t', startdelim='STB_LOCAL', stopdelim='STB_HIPROC')
+    g = macro_to_enum_lines(g, 'st_type', 'uint8_t', startdelim='STT_NOTYPE', stopdelim='STT_HIPROC')
 
     f = open(lht, 'w')
     f.write(g)
     f.close()
 
+    return g
 
 def grabLinuxElfTypes(bv):
     linuxdef_blob = fix_linuxHeadTypes_h()
